@@ -1,0 +1,8 @@
+option java_package = "com.compagny.project.layer.package_b";
+option optimize_for = CODE_SIZE;
+
+message ComplexType {
+    required uint32 version = 1;
+	required string name = 2;
+	required int64 value = 3;
+}
