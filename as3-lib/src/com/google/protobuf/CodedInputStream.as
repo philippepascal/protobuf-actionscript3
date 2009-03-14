@@ -25,7 +25,7 @@ package com.google.protobuf
 	 * @author Robert Blackwood
 	 * -ported from kenton's java implementation
 	 */
-	public final class CodedInputStream {
+	public class CodedInputStream {
 	  /**
 	   * Create a new CodedInputStream wrapping the given InputStream.
 	   */
@@ -250,6 +250,8 @@ package com.google.protobuf
 	      case Descriptor.SFIXED64: return readSFixed64();
 	      case Descriptor.SINT32  : return readSInt32  ();
 	      case Descriptor.SINT64  : return readSInt64  ();
+	      //fix bug 1 protobuf-actionscript3
+		  case Descriptor.ENUM    : return readEnum    ();
 	
 		  default: 
 		  	trace("Unknown primative field type: " + type); 
