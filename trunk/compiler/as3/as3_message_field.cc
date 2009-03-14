@@ -157,7 +157,13 @@ RepeatedMessageFieldGenerator::~RepeatedMessageFieldGenerator() {}
 void RepeatedMessageFieldGenerator::
 GenerateMembers(io::Printer* printer) const {
   printer->Print(variables_,
-	  "private var $name$:Array = new Array();\n");
+	  "public var $name$:Array = new Array();\n\n"
+	  "//fix bug 1 protobuf-actionscript3\n"
+	  "//dummy var using $java_package$ necessary to avoid following exception\n"
+	  "//ReferenceError: Error #1065: Variable NetworkInfo is not defined.\n"
+	  "//at global/flash.utils::getDefinitionByName()\n"
+	  "//at com.google.protobuf::Message/readFromCodedStream()[/Users/philippepascal/Work/workspaceMotorola/BlurCom/lib/com/google/protobuf/Message.as:112]\n"
+	  "private var $name$Dummy:$java_package$.$type$ = null;\n");
 }
 
 void RepeatedMessageFieldGenerator::

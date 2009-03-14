@@ -115,6 +115,8 @@ package com.google.protobuf
 					//Read whole message to ByteArray (not the best, too slow but easy)
 					var size:int = input.readRawVarint32();
 					var bytes:ByteArray = input.readRawBytes(size);
+			  		//fix bug 1 protobuf-actionscript3
+					bytes.position = 0;
 					item.readFromDataOutput(bytes);
 	  			}
 	  			//Just a primative type, read it in
