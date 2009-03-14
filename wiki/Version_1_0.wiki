@@ -18,4 +18,10 @@ Here are the main differences with the protocol-buffers-actionscript project fro
   # imports are automatically added in generated code for the AS based classes and the generated classes.
   # examples have been changed to be closer to a realistic proto files set.
 
+= Bug fixes =
+
+Version 1.0.1 (trunk revision 5) introduce a bunch of fixes with nested messages.
+
+---
+
 I feel like I'm forgetting something, so please download and try, and give me feed back. Once again participant are more than welcome as I certainly can't do this on my own.
