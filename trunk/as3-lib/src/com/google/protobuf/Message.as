@@ -19,7 +19,6 @@ package com.google.protobuf
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 	import flash.utils.IDataOutput;
-	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	
 	/**
@@ -40,9 +39,10 @@ package com.google.protobuf
 	  }
 	  
 	  public function writeToCodedStream(output:CodedOutputStream ):void {
-			
+	  	
         for each (var desc:Descriptor in fieldDescriptors) 
-        {	
+        {
+		
         	//Don't write it if it is null
 			if (this[desc.fieldName] == null)
 			{  
