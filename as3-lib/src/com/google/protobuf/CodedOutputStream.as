@@ -135,8 +135,11 @@ package com.google.protobuf
 	  /** Write an embedded message field, including tag, to the stream. */
 	  public function writeMessage(fieldNumber:int, value:Message):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-	    writeRawVarint32(value.getSerializedSize());
-	    value.writeToCodedStream(this);
+	    var tempStream:ByteArray = new ByteArray();
+	    value.writeToDataOutput(tempStream);
+	    tempStream.position = 0;
+	    writeRawVarint32(tempStream.length);
+	    output.writeBytes(tempStream,0,tempStream.length);
 	  }
 	  
 	
