@@ -353,12 +353,12 @@ package com.google.protobuf
 	   * {@code string} field, including tag.
 	   */
 	  public static function computeStringSize(fieldNumber:int, value:String):int {
-	    
-	      var bytes:ByteArray;
-	      bytes.writeUTFBytes(value);
-	      return computeTagSize(fieldNumber) +
-	             computeRawVarint32Size(bytes.length) +
-	             bytes.length;
+
+	    var bytes:ByteArray = new ByteArray();
+	    bytes.writeUTFBytes(value);
+	    return computeTagSize(fieldNumber) +
+	           computeRawVarint32Size(bytes.length) +
+	           bytes.length;
 	  }
 	
 	  /**
