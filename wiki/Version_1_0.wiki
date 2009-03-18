@@ -24,6 +24,8 @@ Version 1.0.1 (trunk revision 5) introduce a bunch of fixes with nested messages
 
 Version 1.0.2 (trunk revision 7) fix a null pointer exception in CodedOutputStream.
 
+Version 1.0.3 (trunk revision 10) fix the handling of nested messages in CodedOutputStream
+
 ---
 
 I feel like I'm forgetting something, so please download and try, and give me feed back. Once again participant are more than welcome as I certainly can't do this on my own.
