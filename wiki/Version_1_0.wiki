@@ -21,6 +21,7 @@ Here are the main differences with the protocol-buffers-actionscript project fro
 = Bug fixes =
 
 Version 1.0.1 (trunk revision 5) introduce a bunch of fixes with nested messages.
+Version 1.0.2 (trunk revision 7) fix a null pointer exception in CodedOutputStream.
 
 ---
 
