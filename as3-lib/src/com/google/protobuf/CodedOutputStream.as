@@ -16,6 +16,8 @@
 
 package com.google.protobuf
 {
+	import com.hurlant.math.BigInteger;
+	
 	import flash.utils.ByteArray;
 	import flash.utils.IDataOutput;
 	
@@ -53,7 +55,7 @@ package com.google.protobuf
 	  // -----------------------------------------------------------------
 	
 	  /** Write a {@code double} field, including tag, to the stream. */
-	  public function writeDouble(fieldNumber:int, value:Number):void {
+	  public function writeDouble(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
 	    writeRawLittleEndian64(value);
 	  }
@@ -65,13 +67,13 @@ package com.google.protobuf
 	  }
 	
 	  /** Write a {@code uint64} field, including tag, to the stream. */
-	  public function writeUInt64(fieldNumber:int, value:Number):void {
+	  public function writeUInt64(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
 	    writeRawVarint64(value);
 	  }
 	
 	  /** Write an {@code int64} field, including tag, to the stream. */
-	  public function writeInt64(fieldNumber:int, value:Number):void {
+	  public function writeInt64(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
 	    writeRawVarint64(value);
 	  }
@@ -79,6 +81,8 @@ package com.google.protobuf
 	  /** Write an {@code int32} field, including tag, to the stream. */
 	  public function writeInt32(fieldNumber:int, value:Number):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
+	    //Not sure why this...
+	    /*
 	    if (value >= 0) {
 	      writeRawVarint32(value);
 	    } 
@@ -86,10 +90,12 @@ package com.google.protobuf
 	      // Must sign-extend.
 	      writeRawVarint64(value);
 	    }
+	    */
+	    writeRawVarint32(value);
 	  }
 	
 	  /** Write a {@code fixed64} field, including tag, to the stream. */
-	  public function writeFixed64(fieldNumber:int, value:Number):void {
+	  public function writeFixed64(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
 	    writeRawLittleEndian64(value);
 	  }
@@ -174,7 +180,7 @@ package com.google.protobuf
 	  }
 	
 	  /** Write an {@code sfixed64} field, including tag, to the stream. */
-	  public function writeSFixed64(fieldNumber:int, value:Number):void {
+	  public function writeSFixed64(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
 	    writeRawLittleEndian64(value);
 	  }
@@ -186,7 +192,7 @@ package com.google.protobuf
 	  }
 	
 	  /** Write an {@code sint64} field, including tag, to the stream. */
-	  public function writeSInt64(fieldNumber:int, value:Number):void {
+	  public function writeSInt64(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_VARINT);
 	    writeRawVarint64(encodeZigZag64(value));
 	  }
@@ -235,8 +241,8 @@ package com.google.protobuf
 	    	writeUInt32(number, (value as uint));
 	    else if (value is int)
 	     	writeInt32(number, (value as int));
-	    else if (value is Number)
-	    	writeInt64(number, (value as Number));
+	    else if (value is BigInteger)
+	    	writeInt64(number, (value as BigInteger));
 	    else
 	    	throw  new InvalidProtocolBufferException( "Tried to write primative field type, but type was not valid");
 	    	
@@ -253,7 +259,7 @@ package com.google.protobuf
 	    else if (value is int)
 	     	return computeInt32Size(number, (value as int));
 	    else if (value is Number)
-	    	return computeInt64Size(number, (value as Number));
+	    	return computeInt64Size(number, (value as BigInteger));
 	    else if ( value is Message )
 		    return value.getSerializedSize();	
 	    else
@@ -302,7 +308,7 @@ package com.google.protobuf
 	   * Compute the number of bytes that would be needed to encode a
 	   * {@code uint64} field, including tag.
 	   */
-	  public static function computeUInt64Size(fieldNumber:int, value:Number):int {
+	  public static function computeUInt64Size(fieldNumber:int, value:BigInteger):int {
 	    return computeTagSize(fieldNumber) + computeRawVarint64Size(value);
 	  }
 	
@@ -310,7 +316,7 @@ package com.google.protobuf
 	   * Compute the number of bytes that would be needed to encode an
 	   * {@code int64} field, including tag.
 	   */
-	  public static function computeInt64Size(fieldNumber:int, value:Number):int {
+	  public static function computeInt64Size(fieldNumber:int, value:BigInteger):int {
 	    return computeTagSize(fieldNumber) + computeRawVarint64Size(value);
 	  }
 	
@@ -430,7 +436,7 @@ package com.google.protobuf
 	   * Compute the number of bytes that would be needed to encode an
 	   * {@code sfixed64} field, including tag.
 	   */
-	  public static function computeSFixed64Size(fieldNumber:int, value:Number):int {
+	  public static function computeSFixed64Size(fieldNumber:int, value:BigInteger):int {
 	    return computeTagSize(fieldNumber) + LITTLE_ENDIAN_64_SIZE;
 	  }
 	
@@ -447,7 +453,7 @@ package com.google.protobuf
 	   * Compute the number of bytes that would be needed to encode an
 	   * {@code sint64} field, including tag.
 	   */
-	  public static function computeSInt64Size(fieldNumber:int, value:Number):int {
+	  public static function computeSInt64Size(fieldNumber:int, value:BigInteger):int {
 	    return computeTagSize(fieldNumber) +
 	           computeRawVarint64Size(encodeZigZag64(value));
 	  }
@@ -538,29 +544,53 @@ package com.google.protobuf
 	  }
 	
 	  /** Encode and write a varint. */
-	  public function writeRawVarint64(value:Number):void {
+	  public function writeRawVarint64(value:BigInteger):void {
+	  	var ba:ByteArray = new ByteArray();
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0x80);
+	  	ba.position = 0;
+	  	var ff:BigInteger = new BigInteger(ba);
+	  	
 	    while (true) {
-	      if ((value & ~0x7F) == 0) {
-	        writeRawByte((value as int));
+	      var b:int = value.byteValue();
+	      if(value.and(ff).equals(BigInteger.ZERO)) {
+	      	writeRawByte(b);
 	        return;
-	      } else {
-	        writeRawByte(((value as int) & 0x7F) | 0x80);
-	        value >>>= 7;
+	      }	else {
+	      	writeRawByte((b & 0x7F) | 0x80);
+	        value = value.shiftRight(7);
 	      }
 	    }
 	  }
 	
 	  /** Compute the number of bytes that would be needed to encode a varint. */
-	  public static function computeRawVarint64Size(value:Number):int {
-	    if ((value & (0xffffffffffffffff <<  7)) == 0) return 1;
-	    if ((value & (0xffffffffffffffff << 14)) == 0) return 2;
-	    if ((value & (0xffffffffffffffff << 21)) == 0) return 3;
-	    if ((value & (0xffffffffffffffff << 28)) == 0) return 4;
-	    if ((value & (0xffffffffffffffff << 35)) == 0) return 5;
-	    if ((value & (0xffffffffffffffff << 42)) == 0) return 6;
-	    if ((value & (0xffffffffffffffff << 49)) == 0) return 7;
-	    if ((value & (0xffffffffffffffff << 56)) == 0) return 8;
-	    if ((value & (0xffffffffffffffff << 63)) == 0) return 9;
+	  public static function computeRawVarint64Size(value:BigInteger):int {
+	  	var ba:ByteArray = new ByteArray();
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.writeByte(0xff);
+	  	ba.position = 0;
+	  	var ff:BigInteger = new BigInteger(ba);
+	  	if(value.and(ff.shiftLeft(7)).equals(BigInteger.ZERO)) return 1;
+	  	if(value.and(ff.shiftLeft(14)).equals(BigInteger.ZERO)) return 2;
+	  	if(value.and(ff.shiftLeft(21)).equals(BigInteger.ZERO)) return 3;
+	  	if(value.and(ff.shiftLeft(28)).equals(BigInteger.ZERO)) return 4;
+	  	if(value.and(ff.shiftLeft(35)).equals(BigInteger.ZERO)) return 5;
+	  	if(value.and(ff.shiftLeft(42)).equals(BigInteger.ZERO)) return 6;
+	  	if(value.and(ff.shiftLeft(49)).equals(BigInteger.ZERO)) return 7;
+	  	if(value.and(ff.shiftLeft(56)).equals(BigInteger.ZERO)) return 8;
+	  	if(value.and(ff.shiftLeft(63)).equals(BigInteger.ZERO)) return 9;
 	    return 10;
 	  }
 	
@@ -575,17 +605,30 @@ package com.google.protobuf
 	  public static var LITTLE_ENDIAN_32_SIZE:int = 4;
 	
 	  /** Write a little-endian 64-bit integer. */
-	  public function writeRawLittleEndian64(value:Number):void {
-	    writeRawByte((int)(value      ) & 0xFF);
-	    writeRawByte((int)(value >>  8) & 0xFF);
-	    writeRawByte((int)(value >> 16) & 0xFF);
-	    writeRawByte((int)(value >> 24) & 0xFF);
-	    writeRawByte((int)(value >> 32) & 0xFF);
-	    writeRawByte((int)(value >> 40) & 0xFF);
-	    writeRawByte((int)(value >> 48) & 0xFF);
-	    writeRawByte((int)(value >> 56) & 0xFF);
+	  public function writeRawLittleEndian64(value:BigInteger):void {
+	  	//tricky: BigInteger takes an array with heaviest byte first!
+	  	//reverse from the stream
+
+	  	var bytes:ByteArray = value.toByteArray();
+	  	var b8:int = bytes.readByte();
+	  	var b7:int = bytes.readByte();
+	  	var b6:int = bytes.readByte();
+	  	var b5:int = bytes.readByte();
+	  	var b4:int = bytes.readByte();
+	  	var b3:int = bytes.readByte();
+	  	var b2:int = bytes.readByte();
+	  	var b1:int = bytes.readByte();
+	  	
+	  	writeRawByte(b1);
+	  	writeRawByte(b2);
+	  	writeRawByte(b3);
+	  	writeRawByte(b4);
+	  	writeRawByte(b5);
+	  	writeRawByte(b6);
+	  	writeRawByte(b7);
+	  	writeRawByte(b8);
 	  }
-	
+	  
 	  public static const LITTLE_ENDIAN_64_SIZE:int = 8;
 	
 	  /**
@@ -613,9 +656,12 @@ package com.google.protobuf
 	   * @return An unsigned 64-bit integer, stored in a signed int because
 	   *         Java has no explicit unsigned support.
 	   */
-	  public static function encodeZigZag64(n:Number):Number {
+	  public static function encodeZigZag64(n:BigInteger):BigInteger {
 	    // Note:  the right-shift must be arithmetic
-	    return (n << 1) ^ (n >> 63);
+	    var nA:BigInteger = n.shiftLeft(1);
+	    var nB:BigInteger = n.shiftRight(63);
+	    return nA.xor(nB);
+	    //return (n << 1) ^ (n >> 63);
 	  }
 	}
 }

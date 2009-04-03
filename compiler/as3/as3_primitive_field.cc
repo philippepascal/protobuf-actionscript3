@@ -38,7 +38,7 @@ namespace {
 const char* PrimitiveTypeName(As3Type type) {
   switch (type) {
     case AS3TYPE_INT    : return "int";
-    case AS3TYPE_LONG   : return "Number";
+    case AS3TYPE_LONG   : return "BigInteger";
     case AS3TYPE_FLOAT  : return "Number";
     case AS3TYPE_DOUBLE : return "Number";
     case AS3TYPE_BOOLEAN: return "Boolean";
@@ -104,10 +104,12 @@ string DefaultValue(const FieldDescriptor* field) {
       // Need to print as a signed int since As3 has no unsigned.
       return SimpleItoa(static_cast<int32>(field->default_value_uint32()));
     case FieldDescriptor::CPPTYPE_INT64:
-		  return SimpleItoa(field->default_value_int64());
+		  return "new BigInteger("+SimpleItoa(field->default_value_int64())+")";
+//		  return SimpleItoa(field->default_value_int64());
 //		  return SimpleItoa(field->default_value_int64()) + "L";
-    case FieldDescriptor::CPPTYPE_UINT64:
-		  return SimpleItoa(static_cast<int64>(field->default_value_uint64()));
+	case FieldDescriptor::CPPTYPE_UINT64:
+		  return "new BigInteger("+SimpleItoa(static_cast<int64>(field->default_value_uint64()))+")";
+//		  return SimpleItoa(static_cast<int64>(field->default_value_uint64()));
 //		  return SimpleItoa(static_cast<int64>(field->default_value_uint64())) + "L";
     case FieldDescriptor::CPPTYPE_DOUBLE:
 		  return SimpleDtoa(field->default_value_double());

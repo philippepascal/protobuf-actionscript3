@@ -243,6 +243,7 @@ void MessageGenerator::Generate(io::Printer* printer) {
 	
 	printer->Print("import com.google.protobuf.*;\n");
 	printer->Print("import flash.utils.*;\n");
+	printer->Print("import com.hurlant.math.BigInteger;\n");
 	
 	for (int i = 0; i < descriptor_->field_count(); i++) {
 		if (descriptor_->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)

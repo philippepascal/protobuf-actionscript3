@@ -16,6 +16,8 @@
 
 package com.google.protobuf
 {	
+	import com.hurlant.math.BigInteger;
+	
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 	
@@ -111,7 +113,7 @@ package com.google.protobuf
 	  // -----------------------------------------------------------------
 	
 	  /** Read a {@code double} field value from the stream. */
-	  public function readDouble():Number {
+	  public function readDouble():BigInteger {
 	    return readRawLittleEndian64();
 	  }
 	
@@ -121,12 +123,12 @@ package com.google.protobuf
 	  }
 	
 	  /** Read a {@code uint64} field value from the stream. */
-	  public function readUInt64():Number {
+	  public function readUInt64():BigInteger {
 	    return readRawVarint64();
 	  }
 	
 	  /** Read an {@code int64} field value from the stream. */
-	  public function readInt64():Number {
+	  public function readInt64():BigInteger {
 	    return readRawVarint64();
 	  }
 	
@@ -136,7 +138,7 @@ package com.google.protobuf
 	  }
 	
 	  /** Read a {@code fixed64} field value from the stream. */
-	  public function readFixed64():Number {
+	  public function readFixed64():BigInteger {
 	    return readRawLittleEndian64();
 	  }
 	
@@ -209,7 +211,7 @@ package com.google.protobuf
 	  }
 	
 	  /** Read an {@code sfixed64} field value from the stream. */
-	  public function readSFixed64():Number {
+	  public function readSFixed64():BigInteger {
 	    return readRawLittleEndian64();
 	  }
 	
@@ -219,7 +221,7 @@ package com.google.protobuf
 	  }
 	
 	  /** Read an {@code sint64} field value from the stream. */
-	  public function readSInt64():Number {
+	  public function readSInt64():BigInteger {
 	    return decodeZigZag64(readRawVarint64());
 	  }
 	  
@@ -300,12 +302,20 @@ package com.google.protobuf
 	  }
 	
 	  /** Read a raw Varint from the stream. */
-	  public function readRawVarint64():Number {
+	  public function readRawVarint64():BigInteger {
 	    var shift:int = 0;
-	    var result:Number = 0;
+	    var result:BigInteger = BigInteger.ZERO.clone();
 	    while (shift < 64) {
+	      //read a byte a create a BigInteger with it
 	      var b:int = readRawByte();
-	      result |= ((b & 0x7F) as Number) << shift;
+		  var ba:ByteArray = new ByteArray();
+		  ba.writeByte(b & 0x7F);
+		  ba.position=0;
+		  var bb:BigInteger = new BigInteger(ba);
+		  //shift the byte to its position and set it in the result
+	      bb = bb.shiftLeft(shift);
+	      result = result.or(bb);
+	      //are we done or do we continue
 	      if ((b & 0x80) == 0) return result;
 	      shift += 7;
 	    }
@@ -325,7 +335,10 @@ package com.google.protobuf
 	  }
 	
 	  /** Read a 64-bit little-endian integer from the stream. */
-	  public function readRawLittleEndian64():Number {
+	  public function readRawLittleEndian64():BigInteger {
+	  	//tricky: BigInteger takes an array with heaviest byte first!
+	  	//reverse from the stream
+	  	
 		var b1:int = readRawByte();
 	    var b2:int = readRawByte();
 	    var b3:int = readRawByte();
@@ -334,14 +347,18 @@ package com.google.protobuf
 	    var b6:int = readRawByte();
 	    var b7:int = readRawByte();
 	    var b8:int = readRawByte();
-	    return (((b1 as Number) & 0xff)      ) |
-	           (((b2 as Number) & 0xff) <<  8) |
-	           (((b3 as Number) & 0xff) << 16) |
-	           (((b4 as Number) & 0xff) << 24) |
-	           (((b5 as Number) & 0xff) << 32) |
-	           (((b6 as Number) & 0xff) << 40) |
-	           (((b7 as Number) & 0xff) << 48) |
-	           (((b8 as Number) & 0xff) << 56);
+	  	
+	  	var ba:ByteArray = new ByteArray();
+	  	ba.writeByte(b8);
+	  	ba.writeByte(b7);
+	  	ba.writeByte(b6);
+	  	ba.writeByte(b5);
+	  	ba.writeByte(b4);
+	  	ba.writeByte(b3);
+	  	ba.writeByte(b2);
+	  	ba.writeByte(b1);
+	  	ba.position = 0;
+	  	return new BigInteger(ba);
 	  }
 	
 	  /**
@@ -368,8 +385,11 @@ package com.google.protobuf
 	   *          Java has no explicit unsigned support.
 	   * @return A signed 64-bit integer.
 	   */
-	  public static function decodeZigZag64(n:Number):Number {
-	    return (n >>> 1) ^ -(n & 1);
+	  public static function decodeZigZag64(n:BigInteger):BigInteger {
+	  	var nA:BigInteger = n.shiftRight(1);
+	  	var nB:BigInteger = n.and(BigInteger.ONE);
+	  	return nA.xor(nB);
+	    //return (n >>> 1) ^ -(n & 1);
 	  }
 	
 	  // -----------------------------------------------------------------
