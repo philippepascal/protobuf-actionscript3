@@ -9,13 +9,18 @@ and then compile the protocol buffers project as usual.
 	There is a folder called vsprojects that conviently gives you the visual studio .sln, 
 	you must add the whole AS3 source folder to this solution.
 	
--Linux
+-Linux/Mac
 	A modified Makefile.am is provided, you can drop this file into (PB_SRC_DIR)/src and
 	be able to perform a make on it. (courtesy of Bart van Deenen)
+	A modified Makefile.in is also available if you don't have automake installed. 
 
 
 *** INSTALL ACTIONSCRIPT LIBRARY ****
 
-Just drop added the "com" directory located in as3-lib/src right into your source path
+1. There is a hard dependency on the BigInteger class of the http://code.google.com/p/as3crypto/ project.
+ The Best way to handle it is to include the as3crypto.swc from
+ http://code.google.com/p/as3crypto/downloads/list in the library dependency of your project.
+
+2. drop added the "com" directory located in as3-lib/src right into your source path
 for your actionscript project. If using Flex Builder, remember to visit the project
 settings and turn on the lib files for compiling.
