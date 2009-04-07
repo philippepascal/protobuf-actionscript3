@@ -70,7 +70,7 @@ GenerateMembers(io::Printer* printer) const {
 //	"private var $name$_:$type$ = $default$;\n"
 //	"public function get$capitalized_name$():$type$ { return $name$_; }\n");
 	printer->Print(variables_,
-				   "public var $name$:Number = 1; //No default value for now...\n");
+				   "public var $name$:Number = -1; //No default value for now...\n");
 }
 
 void EnumFieldGenerator::
