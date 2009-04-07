@@ -26,3 +26,7 @@ The compilator now uses the type BigInteger for all 64 bits int in messages, and
 == remaining question ==
 
 I might have oversimplified one method: "writeInt32" was forking to either writeRawVarint32 or writeRawVarint64, and I'm not sure why. Bottom line is that writeInt32 takes a Number, and I didn't want to have to change that to BigInteger. maybe it's alright, but I don't have time to investigate that right now.
+
+= Misc =
+
+I recently changed the default value of enum fields to -1: this allow to detect if the field was set or not, instead of giving a value of 0 or 1 which is probably a valid enum value.
