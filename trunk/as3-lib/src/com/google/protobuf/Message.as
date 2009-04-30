@@ -60,8 +60,9 @@ package com.google.protobuf
 						if (desc.isMessage())
 						{
 							//write out the size first
-							output.writeRawVarint32(elem.getSerializedSize())
-							elem.writeToCodedStream(output);
+//							output.writeRawVarint32(elem.getSerializedSize())
+//							elem.writeToCodedStream(output);
+							output.writeMessage(desc.fieldNumber, elem);
 						}
 						else //primative
 							output.writeField(desc.fieldNumber, elem);
