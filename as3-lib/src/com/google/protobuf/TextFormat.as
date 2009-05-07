@@ -19,7 +19,7 @@ package com.google.protobuf
 		}
 
 		public function merge(gpbMessage:Message,text:String):void {
-			trace("### merge "+gpbMessage);
+			//trace("### merge "+gpbMessage);
 			var matchedMessages:Array = new Array();
 			var matchedFields:Array = new Array();
 			//1 match the messages.
@@ -30,7 +30,7 @@ package com.google.protobuf
 			}
 			for each(var matchedMessage:Array in matchedMessages) {
 				var fieldName:String = morphGPBNameToMessageName(matchedMessage[1]);
-				trace("message: "+matchedMessage[1]+" ,fieldName: "+fieldName+" ,value: "+matchedMessage[3]);
+				//trace("message: "+matchedMessage[1]+" ,fieldName: "+fieldName+" ,value: "+matchedMessage[3]);
 				var descriptor:Descriptor = gpbMessage.getDescriptor(fieldName);
 				var classRef:Class = getDefinitionByName(descriptor.messageClass) as Class;
 				var embeddedMessage:Message = new classRef() as Message;
@@ -48,12 +48,12 @@ package com.google.protobuf
 			}
 			for each(var matchedField:Array in matchedFields) {
 				fieldName = morphGPBNameToMessageName(matchedField[1]);
-				trace("field: "+matchedField[1]+" ,fieldName: "+fieldName+" ,value: "+matchedField[3]);
+				//trace("field: "+matchedField[1]+" ,fieldName: "+fieldName+" ,value: "+matchedField[3]);
 				descriptor = gpbMessage.getDescriptor(fieldName);
 				gpbMessage[fieldName] = parseValue(descriptor.type,matchedField[3]);
 			}
 			//
-			trace("### done merging "+gpbMessage);
+			//trace("### done merging "+gpbMessage);
 		}
 		
 		public function parseValue(type:int,value:String):Object {

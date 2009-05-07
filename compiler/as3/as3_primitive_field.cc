@@ -259,7 +259,7 @@ RepeatedPrimitiveFieldGenerator::~RepeatedPrimitiveFieldGenerator() {}
 void RepeatedPrimitiveFieldGenerator::
 GenerateMembers(io::Printer* printer) const {
   printer->Print(variables_,
-	"private var $name$:Array = new Array();"
+	"public var $name$:Array = new Array();"
     "\n");
 }
 
