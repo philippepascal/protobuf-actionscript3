@@ -150,13 +150,12 @@ package com.google.protobuf
 	  
 	
 	  /** Write a {@code bytes} field, including tag, to the stream. */
-	  /*public function writeBytes(fieldNumber:int, value:String):void {
+	  public function writeBytes(fieldNumber:int, value:ByteArray):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED);
-	    var bytes:ByteArray;
-	    bytes.writeUTFBytes(value);
-	    writeRawVarint32(bytes.length);
-	    writeRawBytes(bytes);
-	  }*/
+	    value.position = 0;
+	    writeRawVarint32(value.length);
+	    writeRawBytes(value);
+	  }
 	
 	  /** Write a {@code uint32} field, including tag, to the stream. */
 	  public function writeUInt32(fieldNumber:int, value:int):void {
@@ -243,6 +242,8 @@ package com.google.protobuf
 	     	writeInt32(number, (value as int));
 	    else if (value is BigInteger)
 	    	writeInt64(number, (value as BigInteger));
+	    else if (value is ByteArray)
+	    	writeBytes(number, (value as ByteArray));
 	    else
 	    	throw  new InvalidProtocolBufferException( "Tried to write primative field type, but type was not valid");
 	    	

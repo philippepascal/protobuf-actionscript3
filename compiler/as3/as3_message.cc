@@ -653,8 +653,7 @@ void MessageGenerator::GenerateBuilderParsingMethods(io::Printer* printer) {
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     const FieldDescriptor* field = sorted_fields[i];
-    uint32 tag = WireFormat::MakeTag(field->number(),
-      WireFormat::WireTypeForFieldType(field->type()));
+   uint32 tag = WireFormat::MakeTag(field);
 
     printer->Print(
       "case $tag$: {\n",
