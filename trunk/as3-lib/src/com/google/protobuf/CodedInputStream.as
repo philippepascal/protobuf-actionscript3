@@ -439,7 +439,9 @@ package com.google.protobuf
 		//while (bytesAvailable() < size) {}			
 	    
 	    var bytes:ByteArray = new ByteArray();
-	    input.readBytes(bytes,0,size);
+	    
+	    if(size != 0)
+	      input.readBytes(bytes,0,size);
 	    
 	    return bytes;
 	  }
