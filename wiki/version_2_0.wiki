@@ -8,6 +8,7 @@ Although relatively small in code change, fixing the 64bits primitive handling i
 # The project is now depending on an oustide library: as3crypto
 Therefore the version number got bumped to 2.0
 
+As of 2.2, version 2.2 (same number is a coincidence) of protobuf is supported, and as a consequence previous versions are not. 
 
 = Details =
 
