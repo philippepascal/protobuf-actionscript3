@@ -246,10 +246,16 @@ void MessageGenerator::Generate(io::Printer* printer) {
 	printer->Print("import com.hurlant.math.BigInteger;\n");
 	
 	for (int i = 0; i < descriptor_->field_count(); i++) {
-		if (descriptor_->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)
-			printer->Print("import $package$.$messagetype$;\n"
-						   ,"package", descriptor_->field(i)->message_type()->file()->options().java_package()
-						   ,"messagetype", descriptor_->field(i)->message_type()->name());	
+		if (descriptor_->field(i)->type() == FieldDescriptor::TYPE_MESSAGE) {
+			
+		  string p = descriptor_->field(i)->message_type()->file()->options().java_package();
+		  if(!p.empty()) {
+		    p = p.append(".");
+		  }		
+		  printer->Print("import $package$$messagetype$;\n"
+		  				,"package", p
+						,"messagetype", descriptor_->field(i)->message_type()->name());	
+		}
 	}
 	
 	printer->Print("public final class $classname$ extends Message {\n",
@@ -263,12 +269,19 @@ void MessageGenerator::Generate(io::Printer* printer) {
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
 	  printer->Print("registerField(\"$name$\",", "name", UnderscoresToCamelCase(descriptor_->field(i)));
-	  if (descriptor_->field(i)->type() == FieldDescriptor::TYPE_MESSAGE)
-		  printer->Print("\"$package$.$messagetype$\","
-						 ,"package", descriptor_->field(i)->message_type()->file()->options().java_package()
+	  if (descriptor_->field(i)->type() == FieldDescriptor::TYPE_MESSAGE) {
+		  
+		string p = descriptor_->field(i)->message_type()->file()->options().java_package();
+		if(!p.empty()) {
+			p = p.append(".");
+		}		
+		  
+	    printer->Print("\"$package$$messagetype$\","
+						 ,"package",p
 						 ,"messagetype", descriptor_->field(i)->message_type()->name());
-	  else
+	  } else {
 		  printer->Print("\"\",");
+	  }
 	  printer->Print("Descriptor.$type$,", "type", AllCapsTypeName(descriptor_->field(i)->type()));
 	  printer->Print("Descriptor.$label$,", "label", LabelName(descriptor_->field(i)->label()));
 	  printer->Print("$fieldNum$);", "fieldNum", SimpleItoa(descriptor_->field(i)->number()));
@@ -322,10 +335,12 @@ void MessageGenerator::Generate(io::Printer* printer) {
     printer->Print("\n");
   }
 
-  if (descriptor_->file()->options().optimize_for() == FileOptions::SPEED) {
-    GenerateIsInitialized(printer);
-    GenerateMessageSerializationMethods(printer);
-  }
+	//not supported for now - [Philippe Pascal (Sorrydevil) Oct15th 2009 - protobuf-actionscript3 project]
+  //if (descriptor_->file()->options().optimize_for() == FileOptions::SPEED) {
+//    GenerateIsInitialized(printer);
+//    GenerateMessageSerializationMethods(printer);
+//  }
+	//not supported for now -- EOB
 
   //GenerateParseFromMethods(printer);
   //GenerateBuilder(printer);

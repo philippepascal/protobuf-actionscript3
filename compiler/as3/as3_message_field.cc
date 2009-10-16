@@ -43,7 +43,11 @@ void SetMessageVariables(const FieldDescriptor* descriptor,
   (*variables)["capitalized_name"] =
     UnderscoresToCapitalizedCamelCase(descriptor);
   (*variables)["number"] = SimpleItoa(descriptor->number());
-	(*variables)["java_package"] = package;
+  if(!package.empty()) {
+    (*variables)["java_package"] = package.append(".");
+  } else {
+    (*variables)["java_package"] = package;
+  }
   (*variables)["type"] = descriptor->message_type()->name();
   (*variables)["label"] = SimpleItoa(descriptor->label());
   (*variables)["parent"] = descriptor->containing_type()->name();
@@ -67,7 +71,7 @@ MessageFieldGenerator::~MessageFieldGenerator() {}
 void MessageFieldGenerator::
 GenerateMembers(io::Printer* printer) const {	
 	printer->Print(variables_,
-				   "public var $name$:$java_package$.$type$ = null;\n");}
+				   "public var $name$:$java_package$$type$ = null;\n");}
 
 void MessageFieldGenerator::
 GenerateBuilderMembers(io::Printer* printer) const {
@@ -162,8 +166,8 @@ GenerateMembers(io::Printer* printer) const {
 	  "//dummy var using $java_package$ necessary to avoid following exception\n"
 	  "//ReferenceError: Error #1065: Variable NetworkInfo is not defined.\n"
 	  "//at global/flash.utils::getDefinitionByName()\n"
-	  "//at com.google.protobuf::Message/readFromCodedStream()[/Users/philippepascal/Work/workspaceMotorola/BlurCom/lib/com/google/protobuf/Message.as:112]\n"
-	  "private var $name$Dummy:$java_package$.$type$ = null;\n");
+	  "//at com.google.protobuf::Message/readFromCodedStream()\n"
+	  "private var $name$Dummy:$java_package$$type$ = null;\n");
 }
 
 void RepeatedMessageFieldGenerator::
