@@ -237,7 +237,7 @@ GenerateParsingCode(io::Printer* printer) const {
 void RepeatedEnumFieldGenerator::
 GenerateSerializationCode(io::Printer* printer) const {
   printer->Print(variables_,
-	  "for (element:$type$ in get$capitalized_name$List()) {\n"
+	  "for (var element:$type$ in get$capitalized_name$List()) {\n"
     "  output.writeEnum($number$, element.getNumber());\n"
     "}\n");
 }
@@ -245,7 +245,7 @@ GenerateSerializationCode(io::Printer* printer) const {
 void RepeatedEnumFieldGenerator::
 GenerateSerializedSizeCode(io::Printer* printer) const {
   printer->Print(variables_,
-	  "for (element:$type$ in get$capitalized_name$List()) {\n"
+	  "for (var element:$type$ in get$capitalized_name$List()) {\n"
     "  size += com.google.protobuf.CodedOutputStream\n"
     "    .computeEnumSize($number$, element.getNumber());\n"
     "}\n");
