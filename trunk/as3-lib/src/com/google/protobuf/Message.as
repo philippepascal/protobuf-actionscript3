@@ -65,7 +65,7 @@ package com.google.protobuf
 							output.writeMessage(desc.fieldNumber, elem);
 						}
 						else //primative
-							output.writeField(desc.fieldNumber, elem);
+							output.writeField(desc.fieldNumber, elem, desc.type);
 					}
 				}
 				else 
@@ -77,7 +77,7 @@ package com.google.protobuf
 							output.writeMessage(desc.fieldNumber, this[desc.fieldName]);
 					}
 					else //primative
-						output.writeField(desc.fieldNumber, this[desc.fieldName]);
+						output.writeField(desc.fieldNumber, this[desc.fieldName], desc.type);
 				}
 			}
         }
