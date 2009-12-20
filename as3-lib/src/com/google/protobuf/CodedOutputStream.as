@@ -16,8 +16,6 @@
 
 package com.google.protobuf
 {
-	import com.hurlant.math.BigInteger;
-	
 	import flash.utils.ByteArray;
 	import flash.utils.IDataOutput;
 	
@@ -57,13 +55,15 @@ package com.google.protobuf
 	  /** Write a {@code double} field, including tag, to the stream. */
 	  public function writeDouble(fieldNumber:int, value:BigInteger):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED64);
-	    writeRawLittleEndian64(value);
+	    writeRawDouble(value);
+	    //writeRawLittleEndian64(value);
 	  }
 	
 	  /** Write a {@code float} field, including tag, to the stream. */
 	  public function writeFloat(fieldNumber:int, value:Number):void {
 	    writeTag(fieldNumber, WireFormat.WIRETYPE_FIXED32);
-	    writeRawLittleEndian32(value);
+	    writeRawFloat(value);
+	    //writeRawLittleEndian32(value);
 	  }
 	
 	  /** Write a {@code uint64} field, including tag, to the stream. */
@@ -230,7 +230,7 @@ package com.google.protobuf
 	   *               {@link Message#getField(Descriptors.FieldDescriptor)} for
 	   *               this field.
 	   */
-	  public function writeField(number:int, value:*):void {
+	  public function writeField(number:int, value:*,type:int=0):void {
 	    
 	    if (value is String)
 	    	writeString(number, (value as String));
@@ -244,6 +244,10 @@ package com.google.protobuf
 	    	writeInt64(number, (value as BigInteger));
 	    else if (value is ByteArray)
 	    	writeBytes(number, (value as ByteArray));
+	    else if ((value is Number)&&(type==Descriptor.FLOAT))
+	    	writeFloat(number,value);
+	    else if ((value is Number)&&(type==Descriptor.DOUBLE))
+	    	writeDouble(number,value);
 	    else
 	    	throw  new InvalidProtocolBufferException( "Tried to write primative field type, but type was not valid");
 	    	
@@ -631,6 +635,42 @@ package com.google.protobuf
 	  }
 	  
 	  public static const LITTLE_ENDIAN_64_SIZE:int = 8;
+	
+	  public function writeRawFloat(value:Number):void {
+	  	var bytes:ByteArray = new ByteArray();
+	  	bytes.writeFloat(value);
+	  	var b4:int = bytes.readByte();
+	  	var b3:int = bytes.readByte();
+	  	var b2:int = bytes.readByte();
+	  	var b1:int = bytes.readByte();
+	  	
+	  	writeRawByte(b1);
+	  	writeRawByte(b2);
+	  	writeRawByte(b3);
+	  	writeRawByte(b4);
+	  }
+	
+	  public function writeRawDouble(value:Number):void {
+	  	var bytes:ByteArray = new ByteArray();
+	  	bytes.writeDouble(value);
+	  	var b8:int = bytes.readByte();
+	  	var b7:int = bytes.readByte();
+	  	var b6:int = bytes.readByte();
+	  	var b5:int = bytes.readByte();
+	  	var b4:int = bytes.readByte();
+	  	var b3:int = bytes.readByte();
+	  	var b2:int = bytes.readByte();
+	  	var b1:int = bytes.readByte();
+	  	
+	  	writeRawByte(b1);
+	  	writeRawByte(b2);
+	  	writeRawByte(b3);
+	  	writeRawByte(b4);
+	  	writeRawByte(b5);
+	  	writeRawByte(b6);
+	  	writeRawByte(b7);
+	  	writeRawByte(b8);
+	  }
 	
 	  /**
 	   * Encode a ZigZag-encoded 32-bit value.  ZigZag encodes signed integers

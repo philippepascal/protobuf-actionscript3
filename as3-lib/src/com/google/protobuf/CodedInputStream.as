@@ -114,23 +114,47 @@ package com.google.protobuf
 	
 	  /** Read a {@code double} field value from the stream. */
 	  public function readDouble():BigInteger {
-	    return readRawLittleEndian64();
+	    //return readRawLittleEndian64();
+	  	
+	    var b1:int = readRawByte();
+	    var b2:int = readRawByte();
+	    var b3:int = readRawByte();
+	    var b4:int = readRawByte();
+	    var b5:int = readRawByte();
+	    var b6:int = readRawByte();
+	    var b7:int = readRawByte();
+	    var b8:int = readRawByte();
+
+	  	var ba:ByteArray = new ByteArray();
+        ba.writeByte(b8);
+        ba.writeByte(b7);
+        ba.writeByte(b6);
+        ba.writeByte(b5);
+        ba.writeByte(b4);
+        ba.writeByte(b3);
+        ba.writeByte(b2);
+        ba.writeByte(b1);
+        ba.position = 0;
+      
+      	return ba.readDouble();
 	  }
 	
 	  /** Read a {@code float} field value from the stream. */
 	  public function readFloat():Number {
+	  	
 	    var b1:int = readRawByte();
 	    var b2:int = readRawByte();
 	    var b3:int = readRawByte();
 	    var b4:int = readRawByte();
 
 	  	var ba:ByteArray = new ByteArray();
-      ba.writeByte(b4);
-      ba.writeByte(b3);
-      ba.writeByte(b2);
-      ba.writeByte(b1);
-      ba.position = 0;
-      return ba.readFloat();
+        ba.writeByte(b4);
+        ba.writeByte(b3);
+        ba.writeByte(b2);
+        ba.writeByte(b1);
+        ba.position = 0;
+      
+      	return ba.readFloat();
 	  }
 	
 	  /** Read a {@code uint64} field value from the stream. */
